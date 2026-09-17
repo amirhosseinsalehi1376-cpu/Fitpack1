@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ویتر کافه">
+
+<title>ویتر کافه</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  background:#f3f3f3;
+  color:#151515;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",
+  "Segoe UI",Tahoma,sans-serif;
+}
+
+header{
+  background:#111;
+  color:white;
+  padding:18px 15px 12px;
+  padding-top:calc(18px + env(safe-area-inset-top));
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+header h1{
+  margin:0 0 13px;
+  font-size:22px;
+}
+
+.tabs{
+  display:flex;
+  gap:7px;
+}
+
+.tab{
+  border:0;
+  background:#292929;
+  color:#ddd;
+  border-radius:10px;
+  padding:9px 15px;
+  font-size:14px;
+}
+
+.tab.active{
+  background:white;
+  color:#111;
+}
+
+main{
+  max-width:720px;
+  margin:auto;
+  padding:14px 12px 105px;
+}
+
+.card{
+  background:white;
+  border:1px solid #e5e5e5;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
+}
+
+h2{
+  font-size:17px;
+  margin:0 0 12px;
+}
+
+label{
+  display:block;
+  color:#777;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  border:1px solid #ddd;
+  border-radius:11px;
+  padding:11px;
+  font:inherit;
+  background:white;
+}
+
+textarea{
+  min-height:75px;
+  resize:vertical;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.order-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 65px 90px 40px;
+  gap:6px;
+  align-items:center;
+  margin-bottom:8px;
+}
+
+.qty{
+  text-align:center;
+}
+
+.row-total{
+  text-align:center;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.delete{
+  height:42px;
+  border:0;
+  border-radius:10px;
+  background:#f1f1f1;
+  color:#c00;
+  font-size:20px;
+}
+
+.add{
+  width:100%;
+  border:0;
+  border-radius:11px;
+  padding:12px;
+  background:#eee;
+  font:inherit;
+  margin-top:5px;
+}
+
+.total{
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid #ddd;
+  margin-top:13px;
+  padding-top:13px;
+  font-size:19px;
+  font-weight:800;
+}
+
+.category{
+  margin-bottom:14px;
+}
+
+.category-title{
+  font-size:16px;
+  font-weight:800;
+  padding-bottom:8px;
+  border-bottom:2px solid #111;
+  margin-bottom:5px;
+}
+
+.menu-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:11px 2px;
+  border-bottom:1px solid #eee;
+}
+
+.menu-item:last-child{
+  border-bottom:0;
+}
+
+.menu-price{
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+.actions{
+  position:fixed;
+  z-index:30;
+  bottom:0;
+  left:0;
+  right:0;
+  display:flex;
+  gap:8px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(12px);
+  border-top:1px solid #ddd;
+  padding:10px 12px;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom));
+}
+
+.actions button{
+  flex:1;
+  border:0;
+  border-radius:12px;
+  padding:13px;
+  font:inherit;
+  font-weight:bold;
+}
+
+.new-order{
+  background:#eee;
+}
+
+.invoice-button{
+  background:#111;
+  color:white;
+}
+
+.invoice{
+  background:white;
+  padding:20px;
+}
+
+.invoice-title{
+  text-align:center;
+  font-size:23px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.invoice-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.invoice table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.invoice th,
+.invoice td{
+  padding:9px 4px;
+  border-bottom:1px solid #ddd;
+  text-align:right;
+  font-size:13px;
+}
+
+.invoice-total{
+  display:flex;
+  justify-content:space-between;
+  font-size:19px;
+  font-weight:bold;
+  margin-top:15px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:430px){
+  .order-row{
+    grid-template-columns:minmax(0,1fr) 58px 78px 38px;
+  }
+
+  select,input{
+    font-size:13px;
+  }
+}
+
+@media print{
+  body{
+    background:white;
+  }
+
+  header,
+  .actions,
+  #orderPage,
+  #menuPage{
+    display:none!important;
+  }
+
+  #invoicePage{
+    display:block!important;
+  }
+
+  .invoice{
+    box-shadow:none;
+    border:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>☕ ویتر کافه</h1>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('orderPage',this)">
+      سفارش
+    </button>
+
+    <button class="tab" onclick="showPage('invoicePage',this)">
+      فاکتور
+    </button>
+
+    <button class="tab" onclick="showPage('menuPage',this)">
+      منو
+    </button>
+  </div>
+</header>
+
+
+<main>
+
+<!-- سفارش -->
+<section id="orderPage">
+
+  <div class="card">
+
+    <h2>اطلاعات سفارش</h2>
+
+    <div class="grid">
+
+      <div>
+        <label>شماره میز</label>
+        <input
+          id="tableNumber"
+          type="number"
+          inputmode="numeric"
+          placeholder="مثلاً ۵"
+        >
+      </div>
+
+      <div>
+        <label>شماره سفارش</label>
+        <input
+          id="orderNumber"
+          type="number"
+          inputmode="numeric"
+        >
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>آیتم‌های سفارش</h2>
+
+    <div id="orderItems"></div>
+
+    <button class="add" onclick="addRow()">
+      ＋ افزودن آیتم
+    </button>
+
+    <div class="total">
+      <span>جمع کل</span>
+      <span id="grandTotal">۰ تومان</span>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <label>یادداشت سفارش</label>
+
+    <textarea
+      id="notes"
+      placeholder="مثلاً بدون شکر، یخ کمتر، سس جدا..."
+    ></textarea>
+
+  </div>
+
+</section>
+
+
+<!-- فاکتور -->
+<section id="invoicePage" class="hidden">
+
+  <div class="card invoice" id="invoiceBox">
+
+    <div class="invoice-title">
+      فاکتور سفارش
+    </div>
+
+    <p style="text-align:center;color:#777">
+      هنوز سفارشی ثبت نشده است.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- منو -->
+<section id="menuPage" class="hidden">
+
+  <div class="card">
+
+    <h2>منوی کافه</h2>
+
+    <div id="menuContainer"></div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<div class="actions">
+
+  <button class="new-order" onclick="newOrder()">
+    سفارش جدید
+  </button>
+
+  <button class="invoice-button" onclick="makeInvoice()">
+    مشاهده فاکتور
+  </button>
+
+</div>
+
+
+<script>
+
+/* =========================
+   منوی کافه
+========================= */
+
+const menu = [
+
+  {
+    category:"نوشیدنی‌ها",
+    items:[
+      ["سینگل ۱۰۰",75000],
+      ["سینگل ۷۰/۳۰",80000],
+      ["دبل ۱۰۰",90000],
+      ["امریکانو",110000],
+      ["لته",125000],
+      ["کاپوچینو",135000],
+      ["شیر کاکائو",135000],
+      ["هات چاکلت",150000],
+      ["نوشابه لیوانی",60000],
+      ["نوشابه خانواده",120000],
+      ["نوشابه قوطی",80000],
+      ["دوغ بهارستان",160000],
+      ["دوغ لیوانی",80000]
+    ]
+  },
+
+  {
+    category:"غذاها",
+    items:[
+      ["سیب زمینی",220000],
+      ["سیب زمینی رژیمی",210000],
+      ["سیب زمینی و بال کتف",330000],
+      ["بال و کتف",240000],
+      ["هر بال و کتف اضافه",60000],
+      ["سیب مرغ",340000],
+      ["سیب مرغ رژیمی",360000],
+      ["سیب زمینی و تخم مرغ آبپز",240000],
+      ["سالاد سزار",490000]
+    ]
+  },
+
+  {
+    category:"سس‌ها — Fat",
+    items:[
+      ["مایونز",25000],
+      ["مایونز چیلی",15000],
+      ["کچاپ",20000],
+      ["کچاپ تند",15000],
+      ["فرانسه",25000],
+      ["هزارجزیره",25000],
+      ["خردل",25000],
+      ["انار",15000],
+      ["چدار",50000],
+      ["پنیر پارمزان و قارچ",50000],
+      ["سس سیر",25000]
+    ]
+  },
+
+  {
+    category:"سس‌ها — Zero",
+    items:[
+      ["کچاپ",25000],
+      ["مایونز",30000],
+      ["هزار جزیره",35000],
+      ["باربیکیو",30000]
+    ]
+  }
+
+];
+
+
+/* =========================
+   تبدیل قیمت
+========================= */
+
+function toman(number){
+
+  return new Intl.NumberFormat("fa-IR")
+    .format(number) + " تومان";
+
+}
+
+
+/* =========================
+   همه آیتم‌ها
+========================= */
+
+function allProducts(){
+
+  let products=[];
+
+  menu.forEach(category=>{
+
+    category.items.forEach(item=>{
+
+      products.push({
+        name:item[0],
+        price:item[1]
+      });
+
+    });
+
+  });
+
+  return products;
+
+}
+
+
+/* =========================
+   گزینه‌های انتخاب
+========================= */
+
+function productOptions(){
+
+  let html='<option value="">انتخاب آیتم...</option>';
+
+  menu.forEach(category=>{
+
+    html += `
+      <optgroup label="${category.category}">
+    `;
+
+    category.items.forEach(item=>{
+
+      html += `
+        <option value="${item[0]}|${item[1]}">
+          ${item[0]} — ${toman(item[1])}
+        </option>
+      `;
+
+    });
+
+    html += "</optgroup>";
+
+  });
+
+  return html;
+
+}
+
+
+/* =========================
+   افزودن ردیف
+========================= */
+
+function addRow(){
+
+  const container=document.getElementById("orderItems");
+
+  const row=document.createElement("div");
+
+  row.className="order-row";
+
+  row.innerHTML=`
+
+    <select onchange="updateRow(this)">
+      ${productOptions()}
+    </select>
+
+    <input
+      class="qty"
+      type="number"
+      min="1"
+      value="1"
+      inputmode="numeric"
+      onchange="calculate()"
+    >
+
+    <div class="row-total">
+      ۰
+    </div>
+
+    <button
+      class="delete"
+      onclick="removeRow(this)"
+    >
+      ×
+    </button>
+
+  `;
+
+  container.appendChild(row);
+
+}
+
+
+/* =========================
+   تغییر آیتم
+========================= */
+
+function updateRow(select){
+
+  const row=select.parentElement;
+
+  if(!select.value){
+
+    row.dataset.price=0;
+
+    row.querySelector(".row-total").textContent="۰";
+
+    calculate();
+
+    return;
+
+  }
+
+  const parts=select.value.split("|");
+
+  const price=Number(parts[1]);
+
+  row.dataset.price=price;
+
+  calculate();
+
+}
+
+
+/* =========================
+   حذف ردیف
+========================= */
+
+function removeRow(button){
+
+  button.parentElement.remove();
+
+  calculate();
+
+}
+
+
+/* =========================
+   محاسبه
+========================= */
+
+function calculate(){
+
+  let total=0;
+
+  document
+    .querySelectorAll("#orderItems .order-row")
+    .forEach(row=>{
+
+      const price=Number(row.dataset.price || 0);
+
+      const qty=Number(
+        row.querySelector(".qty").value || 0
+      );
+
+      const rowTotal=price*qty;
+
+      row.querySelector(".row-total")
+        .textContent=toman(rowTotal);
+
+      total += rowTotal;
+
+    });
+
+  document.getElementById("grandTotal")
+    .textContent=toman(total);
+
+}
+
+
+/* =========================
+   گرفتن سفارش
+========================= */
+
+function getOrder(){
+
+  const rows=[];
+
+  document
+    .querySelectorAll("#orderItems .order-row")
+    .forEach(row=>{
+
+      const select=row.querySelector("select");
+
+      if(!select.value) return;
+
+      const parts=select.value.split("|");
+
+      const name=parts[0];
+
+      const price=Number(parts[1]);
+
+      const qty=Number(
+        row.querySelector(".qty").value || 1
+      );
+
+      rows.push({
+        name:name,
+        price:price,
+        qty:qty,
+        total:price*qty
+      });
+
+    });
+
+  return {
+
+    table:
+      document.getElementById("tableNumber").value,
+
+    order:
+      document.getElementById("orderNumber").value,
+
+    notes:
+      document.getElementById("notes").value,
+
+    rows:rows,
+
+    total:
+      rows.reduce(
+        (sum,item)=>sum+item.total,
+        0
+      )
+
+  };
+
+}
+
+
+/* =========================
+   ساخت فاکتور
+========================= */
+
+function makeInvoice(){
+
+  const order=getOrder();
+
+  if(order.rows.length===0){
+
+    alert("حداقل یک آیتم به سفارش اضافه کنید.");
+
+    return;
+
+  }
+
+  let rowsHTML="";
+
+  order.rows.forEach(item=>{
+
+    rowsHTML += `
+
+      <tr>
+
+        <td>${item.name}</td>
+
+        <td>${item.qty}</td>
+
+        <td>${toman(item.total)}</td>
+
+      </tr>
+
+    `;
+
+  });
+
+
+  document.getElementById("invoiceBox").innerHTML=`
+
+    <div class="invoice-title">
+      فاکتور سفارش
+    </div>
+
+    <div class="invoice-info">
+
+      <div>
+        میز:
+        <b>${order.table || "—"}</b>
+      </div>
+
+      <div>
+        سفارش:
+        <b>${order.order || "—"}</b>
+      </div>
+
+    </div>
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>آیتم</th>
+          <th>تعداد</th>
+          <th>مبلغ</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${rowsHTML}
+
+      </tbody>
+
+    </table>
+
+    <div class="invoice-total">
+
+      <span>جمع کل</span>
+
+      <span>
+        ${toman(order.total)}
+      </span>
+
+    </div>
+
+    ${
+      order.notes
+      ?
+      `
+      <div style="margin-top:15px">
+        <b>یادداشت:</b>
+        ${order.notes}
+      </div>
+      `
+      :
+      ""
+    }
+
+    <div style="
+      text-align:center;
+      margin-top:30px;
+      color:#888;
+      font-size:12px;
+    ">
+      با تشکر از شما
+    </div>
+
+    <button
+      onclick="window.print()"
+      style="
+        width:100%;
+        margin-top:20px;
+        padding:13px;
+        border:0;
+        border-radius:11px;
+        background:#111;
+        color:white;
+        font:inherit;
+        font-weight:bold;
+      "
+    >
+      چاپ فاکتور
+    </button>
+
+  `;
+
+  showPage(
+    "invoicePage",
+    document.querySelectorAll(".tab")[1]
+  );
+
+}
+
+
+/* =========================
+   تغییر صفحه
+========================= */
+
+function showPage(page,button){
+
+  document
+    .querySelectorAll("main > section")
+    .forEach(section=>{
+      section.classList.add("hidden");
+    });
+
+  document
+    .getElementById(page)
+    .classList.remove("hidden");
+
+
+  document
+    .querySelectorAll(".tab")
+    .forEach(tab=>{
+      tab.classList.remove("active");
+    });
+
+  if(button){
+    button.classList.add("active");
+  }
+
+}
+
+
+/* =========================
+   منو
+========================= */
+
+function renderMenu(){
+
+  const container=
+    document.getElementById("menuContainer");
+
+  container.innerHTML="";
+
+  menu.forEach(category=>{
+
+    let html=`
+
+      <div class="category">
+
+        <div class="category-title">
+          ${category.category}
+        </div>
+
+    `;
+
+    category.items.forEach(item=>{
+
+      html += `
+
+        <div class="menu-item">
+
+          <span>
+            ${item[0]}
+          </span>
+
+          <span class="menu-price">
+            ${toman(item[1])}
+          </span>
+
+        </div>
+
+      `;
+
+    });
+
+    html += "</div>";
+
+    container.innerHTML += html;
+
+  });
+
+}
+
+
+/* =========================
+   سفارش جدید
+========================= */
+
+function newOrder(){
+
+  if(
+    !confirm("سفارش فعلی پاک شود؟")
+  ){
+    return;
+  }
+
+  document.getElementById("orderItems")
+    .innerHTML="";
+
+  document.getElementById("tableNumber")
+    .value="";
+
+  document.getElementById("notes")
+    .value="";
+
+  document.getElementById("orderNumber")
+    .value=
+      String(Date.now()).slice(-5);
+
+  document.getElementById("grandTotal")
+    .textContent="۰ تومان";
+
+  addRow();
+
+  showPage(
+    "orderPage",
+    document.querySelector(".tab")
+  );
+
+}
+
+
+/* =========================
+   شروع برنامه
+========================= */
+
+renderMenu();
+
+document.getElementById("orderNumber")
+  .value=String(Date.now()).slice(-5);
+
+addRow();
+
+</script>
+
+</body>
+</html>
